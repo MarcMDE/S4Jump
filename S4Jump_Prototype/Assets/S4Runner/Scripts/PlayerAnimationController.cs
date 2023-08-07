@@ -21,3 +21,4 @@ public class PlayerAnimationController : MonoBehaviour
         _animator.SetFloat("Horizontal", horizontalInput); 
     }
 }
+    

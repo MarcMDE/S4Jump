@@ -1,3 +1,4 @@
+using Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,6 +12,8 @@ public class PlayerMovementController : MonoBehaviour
 
     [SerializeField]
     private float _jumpForce;
+    [SerializeField]
+    private float _sideJumpSpeed;
 
     [SerializeField]
     private float _gravityAcc;
@@ -26,6 +29,8 @@ public class PlayerMovementController : MonoBehaviour
     
     private CharacterController _characterController;
 
+    private ClickDetector _leftClickDetector;
+    private ClickDetector _rightClickDetector;
     public event Action OnJump;
 
 
@@ -33,6 +38,9 @@ public class PlayerMovementController : MonoBehaviour
     {
         _isGrounded = false;
         _isJumping = false;
+
+        _leftClickDetector = new ClickDetector();
+        _rightClickDetector = new ClickDetector();
 
         _characterController = GetComponent<CharacterController>();
     }
@@ -42,24 +50,58 @@ public class PlayerMovementController : MonoBehaviour
         Move();
     }
 
+    void WallJump()
+    {
+
+    }
+
     void Move()
     {
         _isGrounded = Physics.CheckSphere(_groundCheck.position, _groundDistance, _groundMask);
 
-        float horizontalInput = Input.GetAxis("Horizontal");
         //float verticalInput = Input.GetAxis("Vertical");
 
-        Vector3 move = transform.right * horizontalInput/* + transform.forward * verticalInput*/;
-        move *= _movementSpeed;
+        Vector3 move = Vector3.zero;
 
         if (_isGrounded)
         {
             _velocity.y = 0f;
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (_isJumping)
+            {
+                _isJumping = false;
+                _velocity.x = 0;
+            }
+
+            float horizontalInput = Input.GetAxis("Horizontal");
+
+            move = transform.right * horizontalInput/* + transform.forward * verticalInput*/;
+            move *= _movementSpeed;
+
+
+            if (_leftClickDetector.KeyClick(KeyCode.A))
             {
                 _velocity.y = _jumpForce;
                 _isJumping = true;
+                
+                _velocity.x = -_sideJumpSpeed;
+
+                OnJump?.Invoke();
+            }
+            else if (_rightClickDetector.KeyClick(KeyCode.D))
+            {
+                _velocity.y = _jumpForce;
+                _isJumping = true;
+                
+                _velocity.x = _sideJumpSpeed;
+
+                OnJump?.Invoke();
+            }
+            else if (Input.GetKeyDown(KeyCode.Space))
+            {
+                _velocity.y = _jumpForce;
+                _isJumping = true;
+                
                 OnJump?.Invoke();
             }
         }
