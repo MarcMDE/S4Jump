@@ -22,7 +22,11 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private float _groundDistance;
     [SerializeField] private LayerMask _groundMask;
 
+    [SerializeField] private TriggerEventLauncher _wallTriggerLauncher;
+
     private Vector3 _velocity;
+
+    private Collider _currentWallCollider;
 
     private bool _isJumping;
     private bool _isGrounded;
@@ -39,22 +43,36 @@ public class PlayerMovementController : MonoBehaviour
         _isGrounded = false;
         _isJumping = false;
 
+        _currentWallCollider = null;
+
         _leftClickDetector = new ClickDetector();
         _rightClickDetector = new ClickDetector();
 
         _characterController = GetComponent<CharacterController>();
     }
 
+    private void OnEnable()
+    {
+        _wallTriggerLauncher.OnStay += SetWallCollider;
+        _wallTriggerLauncher.OnExit += RemoveWallCollider;
+    }
+
+    void SetWallCollider(Collider c)
+    {
+        _currentWallCollider = c;
+    }
+
+    void RemoveWallCollider(Collider c)
+    {
+        if (c == _currentWallCollider) 
+            _currentWallCollider = null;
+    }
+
     void Update()
     {
         Move();
     }
-
-    void WallJump()
-    {
-
-    }
-
+     
     void Move()
     {
         _isGrounded = Physics.CheckSphere(_groundCheck.position, _groundDistance, _groundMask);
@@ -77,8 +95,10 @@ public class PlayerMovementController : MonoBehaviour
 
             move = transform.right * horizontalInput/* + transform.forward * verticalInput*/;
             move *= _movementSpeed;
+        }
 
-
+        if (_isGrounded || _currentWallCollider != null)
+        {
             if (_leftClickDetector.KeyClick(KeyCode.A))
             {
                 _velocity.y = _jumpForce;
@@ -108,6 +128,11 @@ public class PlayerMovementController : MonoBehaviour
 
         _velocity.y += _gravityAcc * Time.deltaTime;
         _characterController.Move((move + _velocity) * Time.deltaTime);
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        
     }
 
 #if UNITY_EDITOR
