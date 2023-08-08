@@ -64,8 +64,12 @@ public class PlayerMovementController : MonoBehaviour
 
     void RemoveWallCollider(Collider c)
     {
-        if (c == _currentWallCollider) 
+        if (c == _currentWallCollider)
+        {
             _currentWallCollider = null;
+
+            if (!_isGrounded && _velocity.y < 0) _velocity.x = 0;
+        }
     }
 
     void Update()
@@ -164,11 +168,6 @@ public class PlayerMovementController : MonoBehaviour
 
         _velocity.y += _gravityAcc * Time.deltaTime;
         _characterController.Move((move + _velocity) * Time.deltaTime);
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        
     }
 
 #if UNITY_EDITOR
