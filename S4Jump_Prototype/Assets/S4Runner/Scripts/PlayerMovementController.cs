@@ -95,15 +95,19 @@ public class PlayerMovementController : MonoBehaviour
 
             move = transform.right * horizontalInput/* + transform.forward * verticalInput*/;
             move *= _movementSpeed;
-        }
 
-        if (_isGrounded || _currentWallCollider != null)
-        {
-            if (_leftClickDetector.KeyClick(KeyCode.A))
+            if (Input.GetKeyDown(KeyCode.Space))
             {
                 _velocity.y = _jumpForce;
                 _isJumping = true;
-                
+
+                OnJump?.Invoke();
+            }
+            else if (_leftClickDetector.KeyClick(KeyCode.A))
+            {
+                _velocity.y = _jumpForce;
+                _isJumping = true;
+
                 _velocity.x = -_sideJumpSpeed;
 
                 OnJump?.Invoke();
@@ -112,18 +116,50 @@ public class PlayerMovementController : MonoBehaviour
             {
                 _velocity.y = _jumpForce;
                 _isJumping = true;
-                
+
                 _velocity.x = _sideJumpSpeed;
 
                 OnJump?.Invoke();
             }
-            else if (Input.GetKeyDown(KeyCode.Space))
-            {
-                _velocity.y = _jumpForce;
-                _isJumping = true;
+        }
+        else if (_currentWallCollider != null)
+        {
+            
+                if (_leftClickDetector.KeyClick(KeyCode.A))
+                {
+                    Debug.Log($"wall jump {Vector3.Dot(_velocity.normalized, Vector3.up)}");
+                    if (Vector3.Dot(_velocity.normalized, Vector3.up) > -0.45f)
+                    {
+                        if (_currentWallCollider.transform.position.x > transform.position.x)
+                        {
+                            _velocity.y = _jumpForce;
+                            _isJumping = true;
                 
-                OnJump?.Invoke();
-            }
+                            _velocity.x = -_sideJumpSpeed;
+
+                            OnJump?.Invoke();
+                        }
+                    }
+                }
+                else if (_rightClickDetector.KeyClick(KeyCode.D))
+                {
+                    Debug.Log($"wall jump {Vector3.Dot(_velocity.normalized, Vector3.up)}");
+
+                    if (Vector3.Dot(_velocity.normalized, Vector3.up) > -0.45f)
+                    {
+                        if (_currentWallCollider.transform.position.x < transform.position.x)
+                        {
+                            _velocity.y = _jumpForce;
+                            _isJumping = true;
+
+                            _velocity.x = _sideJumpSpeed;
+
+                            OnJump?.Invoke();
+                        }
+                    }
+
+                }
+            
         }
 
         _velocity.y += _gravityAcc * Time.deltaTime;

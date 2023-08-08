@@ -6,7 +6,7 @@ namespace Core
 {
     public class ClickDetector
     {
-        public float _clickDuration = 0.15f; // Tiempo máximo para considerar un clic válido
+        private float _clickDuration = 0.2f; // Tiempo máximo para considerar un clic válido
         private bool _clickDetected = false;
         private float _clickStartTime = 0f;
 
@@ -26,12 +26,12 @@ namespace Core
 
                 if (clickDuration <= this._clickDuration)
                 {
-                    Debug.Log("Clic válido!");
+                    //Debug.Log("Clic válido!");
                     return true;
                 }
                 else
                 {
-                    Debug.Log("Clic no válido (tiempo excedido).");
+                    //Debug.Log("Clic no válido (tiempo excedido).");
                 }
 
                 _clickDetected = false; // Reiniciar la detección de clic
