@@ -131,7 +131,6 @@ public class PlayerMovementController : MonoBehaviour
             
                 if (_leftClickDetector.KeyClick(KeyCode.A))
                 {
-                    Debug.Log($"wall jump {Vector3.Dot(_velocity.normalized, Vector3.up)}");
                     if (Vector3.Dot(_velocity.normalized, Vector3.up) > -0.45f)
                     {
                         if (_currentWallCollider.transform.position.x > transform.position.x)
@@ -147,8 +146,6 @@ public class PlayerMovementController : MonoBehaviour
                 }
                 else if (_rightClickDetector.KeyClick(KeyCode.D))
                 {
-                    Debug.Log($"wall jump {Vector3.Dot(_velocity.normalized, Vector3.up)}");
-
                     if (Vector3.Dot(_velocity.normalized, Vector3.up) > -0.45f)
                     {
                         if (_currentWallCollider.transform.position.x < transform.position.x)

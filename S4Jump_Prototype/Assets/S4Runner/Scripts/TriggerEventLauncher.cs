@@ -10,7 +10,6 @@ public class TriggerEventLauncher : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.gameObject.name);
         OnStay?.Invoke(other);
     }
 
