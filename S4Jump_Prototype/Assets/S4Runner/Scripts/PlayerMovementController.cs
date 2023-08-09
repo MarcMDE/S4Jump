@@ -129,37 +129,37 @@ public class PlayerMovementController : MonoBehaviour
         else if (_currentWallCollider != null)
         {
             
-                if (_leftClickDetector.KeyClick(KeyCode.A))
+            if (_leftClickDetector.KeyClick(KeyCode.A))
+            {
+                if (Vector3.Dot(_velocity.normalized, Vector3.up) > -0.45f)
                 {
-                    if (Vector3.Dot(_velocity.normalized, Vector3.up) > -0.45f)
+                    if (_currentWallCollider.transform.position.x > transform.position.x)
                     {
-                        if (_currentWallCollider.transform.position.x > transform.position.x)
-                        {
-                            _velocity.y = _jumpForce;
-                            _isJumping = true;
+                        _velocity.y = _jumpForce;
+                        _isJumping = true;
                 
-                            _velocity.x = -_sideJumpSpeed;
+                        _velocity.x = -_sideJumpSpeed;
 
-                            OnJump?.Invoke();
-                        }
+                        OnJump?.Invoke();
                     }
                 }
-                else if (_rightClickDetector.KeyClick(KeyCode.D))
+            }
+            else if (_rightClickDetector.KeyClick(KeyCode.D))
+            {
+                if (Vector3.Dot(_velocity.normalized, Vector3.up) > -0.45f)
                 {
-                    if (Vector3.Dot(_velocity.normalized, Vector3.up) > -0.45f)
+                    if (_currentWallCollider.transform.position.x < transform.position.x)
                     {
-                        if (_currentWallCollider.transform.position.x < transform.position.x)
-                        {
-                            _velocity.y = _jumpForce;
-                            _isJumping = true;
+                        _velocity.y = _jumpForce;
+                        _isJumping = true;
 
-                            _velocity.x = _sideJumpSpeed;
+                        _velocity.x = _sideJumpSpeed;
 
-                            OnJump?.Invoke();
-                        }
+                        OnJump?.Invoke();
                     }
-
                 }
+
+            }
             
         }
 
