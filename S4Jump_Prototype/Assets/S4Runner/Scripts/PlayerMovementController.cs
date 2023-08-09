@@ -167,6 +167,11 @@ public class PlayerMovementController : MonoBehaviour
         _characterController.Move((move + _velocity) * Time.deltaTime);
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        _velocity.x = 0;
+    }
+
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
