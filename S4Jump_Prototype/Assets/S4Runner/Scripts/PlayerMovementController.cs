@@ -16,6 +16,9 @@ public class PlayerMovementController : MonoBehaviour
     private float _sideJumpSpeed;
 
     [SerializeField]
+    private float _wallJumpSpeed;
+
+    [SerializeField]
     private float _gravityAcc;
 
     [SerializeField] private Transform _groundCheck;
@@ -25,6 +28,7 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private TriggerEventLauncher _wallTriggerLauncher;
 
     private Vector3 _velocity;
+    private Vector3 _inputVelocity;
 
     private Collider _currentWallCollider;
 
@@ -40,6 +44,8 @@ public class PlayerMovementController : MonoBehaviour
 
     void Start()
     {
+        _velocity = _inputVelocity = Vector3.zero;
+        
         _isGrounded = false;
         _isJumping = false;
 
@@ -55,6 +61,12 @@ public class PlayerMovementController : MonoBehaviour
     {
         _wallTriggerLauncher.OnStay += SetWallCollider;
         _wallTriggerLauncher.OnExit += RemoveWallCollider;
+    }
+
+    private void OnDisable()
+    {
+        _wallTriggerLauncher.OnStay -= SetWallCollider;
+        _wallTriggerLauncher.OnExit -= RemoveWallCollider;
     }
 
     void SetWallCollider(Collider c)
@@ -138,7 +150,7 @@ public class PlayerMovementController : MonoBehaviour
                         _velocity.y = _jumpForce;
                         _isJumping = true;
                 
-                        _velocity.x = -_sideJumpSpeed;
+                        _velocity.x = -_wallJumpSpeed;
 
                         OnJump?.Invoke();
                     }
@@ -153,7 +165,7 @@ public class PlayerMovementController : MonoBehaviour
                         _velocity.y = _jumpForce;
                         _isJumping = true;
 
-                        _velocity.x = _sideJumpSpeed;
+                        _velocity.x = _wallJumpSpeed;
 
                         OnJump?.Invoke();
                     }
